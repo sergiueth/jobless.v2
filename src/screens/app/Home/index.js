@@ -5,63 +5,49 @@ import Header from "../../../components/Header";
 import { categories } from "../../../data/categories";
 import CategoryBox from "../../../components/CategoryBox";
 import ProductHomeItem from "../../../components/ProductHomeItem";
-import { getServices } from "../../../utils/backendCalls";
 import { ServicesContext } from "../../../../App";
+import { getServices } from "../../../utils/backendCalls";
 
 const Home = ({ navigation }) => {
-  const [selectedCategory, setSelectedCatgory] = useState();
+  const [selectedCategory, setSelectedCategory] = useState();
   const [keyword, setKeyword] = useState();
+  const [filteredProducts, setFilteredProducts] = useState(services);
   const { services, setServices } = useContext(ServicesContext);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  console.log("services :>>", services);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getServices();
-        console.log("data :>>", data);
-        setServices(data);
-
-        // Now that services are available, update filteredProducts
-        setFilteredProducts(data);
-      } catch (error) {
-        console.error("Error fetching services:", error);
-      }
-    };
-
-    fetchData();
-  }, [setServices]);
+    (async () => {
+      const data = await getServices();
+      setServices(data);
+    })();
+  }, []);
 
   useEffect(() => {
-    if (services) {
-      if (selectedCategory && !keyword) {
-        const updatedProducts = services.filter(
-          (product) => String(product?.category) === String(selectedCategory)
-        );
-
-        setFilteredProducts(updatedProducts);
-      } else if (selectedCategory && keyword) {
-        const updatedProducts = services.filter(
-          (product) =>
-            String(product?.category) === String(selectedCategory) &&
-            product?.title?.toLowerCase().includes(keyword?.toLowerCase())
-        );
-        setFilteredProducts(updatedProducts);
-      } else if (!selectedCategory && keyword) {
-        const updatedProducts = services.filter((product) =>
+    if (selectedCategory && !keyword) {
+      const updatedProducts = services.filter(
+        (product) => String(product?.category) === String(selectedCategory)
+      );
+      setFilteredProducts(updatedProducts);
+    } else if (selectedCategory && keyword) {
+      const updatedProducts = services.filter(
+        (product) =>
+          String(product?.category) === String(selectedCategory) &&
           product?.title?.toLowerCase().includes(keyword?.toLowerCase())
-        );
-        setFilteredProducts(updatedProducts);
-      } else if (!keyword && !selectedCategory) {
-        setFilteredProducts(services);
-      }
+      );
+      setFilteredProducts(updatedProducts);
+    } else if (!selectedCategory && keyword) {
+      const updatedProducts = services.filter((product) =>
+        product?.title?.toLowerCase().includes(keyword?.toLowerCase())
+      );
+      setFilteredProducts(updatedProducts);
+    } else if (!keyword && !selectedCategory) {
+      setFilteredProducts(services);
     }
-  }, [selectedCategory, keyword, services]);
+  }, [selectedCategory, keyword]);
 
   const renderCategoryItem = ({ item, index }) => {
     return (
       <CategoryBox
-        onPress={() => setSelectedCatgory(item?.id)}
+        onPress={() => setSelectedCategory(item?.id)}
         isSelected={item?.id === selectedCategory}
         isFirst={index === 0}
         title={item?.title}

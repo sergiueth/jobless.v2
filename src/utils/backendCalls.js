@@ -88,3 +88,23 @@ export const getServices = async () => {
     console.log("e services :>> ", e.response);
   }
 };
+
+export const updateService = async (id, data) => {
+  try {
+    const response = await request({
+      url: "/services",
+      method: "patch",
+      data: {
+        servicesId: id,
+        ...data,
+      },
+    });
+
+    if (response) {
+      const services = await getServices();
+      return services;
+    }
+  } catch (e) {
+    console.log("e services :>> ", e.response);
+  }
+};
