@@ -5,8 +5,8 @@ import Header from "../../../components/Header";
 import { categories } from "../../../data/categories";
 import CategoryBox from "../../../components/CategoryBox";
 import ProductHomeItem from "../../../components/ProductHomeItem";
-import { ServicesContext } from "../../../../App";
 import { getServices } from "../../../utils/backendCalls";
+import { ServicesContext } from "../../../../App";
 
 const Home = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState();
@@ -93,7 +93,7 @@ const Home = ({ navigation }) => {
             numColumns={2}
             data={filteredProducts}
             renderItem={renderProductItem}
-            keyExtractor={(item) => String(item.id)}
+            keyExtractor={(item) => String(item._id)}
             ListFooterComponent={<View style={{ height: 200 }} />}
           />
         </ScrollView>

@@ -1,6 +1,5 @@
 import { request } from "./request";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_BASE_URL } from "@env";
 
 export const login = async (values) => {
   try {
@@ -106,5 +105,50 @@ export const updateService = async (id, data) => {
     }
   } catch (e) {
     console.log("e services :>> ", e.response);
+  }
+};
+
+export const deleteService = async (id) => {
+  try {
+    const response = await request({
+      url: "/services",
+      method: "delete",
+      data: {
+        servicesId: id,
+      },
+    });
+
+    if (response) {
+      const services = await getServices();
+      return services;
+    }
+  } catch (e) {
+    console.log("e services :>> ", e.response);
+  }
+};
+
+export const addService = async (data) => {
+  try {
+    const formData = new FormData();
+    const objKeys = Object.keys(data);
+    console.log("objKeys :>> ", objKeys);
+    objKeys.forEach((key) => {
+      formData.append(key, data[key]);
+    });
+    const response = await request({
+      url: "/services",
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    });
+
+    if (response) {
+      const services = await getServices();
+      return services;
+    }
+  } catch (e) {
+    console.log("e add services :>> ", e.response);
   }
 };

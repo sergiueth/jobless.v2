@@ -1,29 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
-  ScrollView,
   TouchableOpacity,
   View,
   Image,
   Pressable,
   ActivityIndicator,
-  KeyboardAvoidingView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"; // Import KeyboardAwareScrollView
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Header from "../../../components/Header";
 import { colors } from "../../../utils/colors";
 import { launchCameraAsync, launchImageLibraryAsync } from "expo-image-picker";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import { categories } from "../../../data/categories";
+import { addService } from "../../../utils/backendCalls";
+import { ServicesContext } from "../../../../App";
 
 const CreateListing = ({ navigation }) => {
   const [images, setImages] = useState([]);
   const [values, setValues] = useState({});
   const [loading, setLoading] = useState(false);
-  console.log("values :>>", values);
+  const { setServices } = useContext(ServicesContext);
 
   const goBack = () => {
     navigation.goBack();
@@ -63,8 +63,34 @@ const CreateListing = ({ navigation }) => {
     setImages((list) => list.filter((img) => img.uri !== imageUri));
   };
 
+  console.log("images :>> ", images);
+
   const onChange = (value, key) => {
     setValues((val) => ({ ...val, [key]: value }));
+  };
+
+  console.log("values :>> ", values);
+
+  const onSubmit = async () => {
+    const img = images?.length ? images[0] : null;
+    const data = {
+      ...values,
+      category: values.category?.id,
+    };
+
+    if (img) {
+      data["image"] = {
+        uri: img?.uri,
+        name: img?.fileName,
+        type: img?.type,
+      };
+    }
+    console.log("data :>> ", data);
+
+    const updatedServices = await addService(data);
+    setServices(updatedServices);
+    // setValues({});
+    navigation.navigate("MyListings");
   };
 
   return (
@@ -93,7 +119,7 @@ const CreateListing = ({ navigation }) => {
             </View>
           </TouchableOpacity>
 
-          {images.map((image, index) => (
+          {images.map((image) => (
             <View style={styles.imageCont} key={image.uri}>
               <Image style={styles.image} source={{ uri: image.uri }} />
               <Pressable hitSlop={20} onPress={() => onDeleteImage(image.uri)}>
@@ -141,7 +167,7 @@ const CreateListing = ({ navigation }) => {
           multiline
         />
 
-        <Button title="Submit" style={styles.button} />
+        <Button onPress={onSubmit} title="Submit" style={styles.button} />
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );

@@ -53,7 +53,7 @@ const Favorites = ({ navigation }) => {
         }
         data={likedServices}
         renderItem={renderItem}
-        keyExtractor={(item) => String(item?.id)}
+        keyExtractor={(item) => String(item?._id)}
       />
     </SafeAreaView>
   );
