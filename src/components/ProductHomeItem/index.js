@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, View, Pressable, Image } from "react-native";
+import { Text, StyleSheet, Pressable, Image } from "react-native";
 import { colors } from "../../utils/colors";
 import { Dimensions } from "react-native";
 import { API_BASE_URL } from "@env";

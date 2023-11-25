@@ -40,7 +40,6 @@ const ProductDetails = ({ route, navigation }) => {
 
   const onBookmark = async () => {
     const data = await updateService(product?._id, { liked: true });
-    console.log("data :>>", data);
     setServices(data);
   };
 

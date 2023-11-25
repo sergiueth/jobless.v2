@@ -1,26 +1,32 @@
 import React from "react";
 import { Text, StyleSheet, View, Pressable, Image } from "react-native";
 import { colors } from "../../utils/colors";
+import { API_BASE_URL } from "@env";
 import { Dimensions } from "react-native";
 
 const { width } = Dimensions.get("window");
 
 console.log("width :>", width);
 
-const FavoritesItem = ({ title, price, icon, image, onPress }) => {
+const FavoritesItem = ({ title, price, icon, image, onPress, onIconPress }) => {
   return (
     <Pressable onPress={onPress} style={styles.container}>
-      <Image style={styles.image} source={{ uri: image }} />
+      <Image
+        style={styles.image}
+        source={{ uri: `${API_BASE_URL}/${image?.path}` }}
+      />
 
       <View style={styles.content}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.price}>{price}</Text>
       </View>
 
-      <Image
-        source={icon || require("../../assets/close.png")}
-        style={styles.icon}
-      />
+      <Pressable onPress={onIconPress}>
+        <Image
+          source={icon || require("../../assets/close.png")}
+          style={styles.icon}
+        />
+      </Pressable>
     </Pressable>
   );
 };

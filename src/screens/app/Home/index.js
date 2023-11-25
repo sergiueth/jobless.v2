@@ -42,7 +42,7 @@ const Home = ({ navigation }) => {
     } else if (!keyword && !selectedCategory) {
       setFilteredProducts(services);
     }
-  }, [selectedCategory, keyword]);
+  }, [selectedCategory, keyword, services]);
 
   const renderCategoryItem = ({ item, index }) => {
     return (
